@@ -18,13 +18,9 @@ router.post('/update/Menu',verifyToken, editMenu)
 router.delete('/delete/Menu',verifyToken, deleteTheMenu)
 
 // order 
-
-// get the restaurent list
-router.get('/App/restaurent', getRestaurant)
-// get the menu list
-router.get('/App/menu', getTheMEnu)
-// get the order list
-router.get('/App/order', addTheOrder)
+router.get('/App/restaurent',verifyToken, getRestaurant)
+router.get('/App/menu',verifyToken, getTheMEnu)
+router.get('/App/order',verifyToken, addTheOrder)
 //  
 
 export default router;
