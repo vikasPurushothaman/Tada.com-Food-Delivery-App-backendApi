@@ -1,4 +1,5 @@
 import MenuItem from "../models/MenuItem.js";
+import Order from "../models/Order.js";
 import Restaurant from "../models/Restaurant.js";
 import User from "../models/User.js";
 import bcrypt from 'bcrypt';
@@ -97,3 +98,41 @@ export const getTheMEnu = async(req, res) => {
     
   }
 }
+
+export const addTheOrder = async (req, res) => {
+  const { id, items, address } = req.body;
+
+  try {
+    const formatedItems = items.map(item => ({
+      menuItem: item._id,
+      quantity: parseInt(item.quantity),
+    }));
+
+    // Fetch all menu items
+    const menuItems = await Promise.all(
+      items.map(item => MenuItem.findById(item._id))
+    );
+
+    let total = 0;
+
+    menuItems.forEach((menuItem, index) => {
+      if (menuItem) {
+        const quantity = parseInt(items[index].quantity);
+        total += menuItem.price * quantity;
+      }
+    });
+
+    const newOrder = new Order({
+      user: id,
+      items: formatedItems,
+      deliveryAddress: address,
+      total: Math.ceil(total),
+    });
+
+    await newOrder.save();
+
+    res.status(201).json({ message: 'Order created successfully', newOrder });
+  } catch (error) {
+    res.status(500).json({ message: 'Order creation failed', error: error.message });
+  }
+};
