@@ -101,17 +101,21 @@ export const editMenu = async (req, res) => {
 export const deleteTheMenu = async (req, res) => {
     const { id } = req.query;
     try {
-            const deleteMenu = await MenuItem.findByIdAndDelete(id);
-            if (!deleteMenu) {
-                return res.status(404).json({ message: "Menu item not found" });
-            }
-                const deleteFromRestaurent = await Restaurant.updateOne(
-                    { menu: id },
-                    {$pull : { menu : id }}
-                )
-                res.status(200).json({ message: "Menu item deleted successfully" });
+        const deleteMenu = await MenuItem.findByIdAndDelete(id);
+        if (!deleteMenu) {
+            return res.status(404).json({ message: "Menu item not found" });
+        }
+
+        const deleteFromRestaurant = await Restaurant.updateMany(
+            { menu: id },
+            { $pull: { menu: id } }
+        );
+        if (deleteFromRestaurant.nModified === 0) {
+            console.log('No restaurant menu was updated.');
+        }
+        res.status(200).json({ message: "Menu item deleted successfully" });
     } catch (error) {
-        return res.status(500).json({ message: "Error deleting menu item", error: error});
-        
+        console.error(error);
+        return res.status(500).json({ message: "Error deleting menu item", error: error.message });
     }
-}
+};
