@@ -1,7 +1,7 @@
 import express from 'express';
 import { Login, signup } from '../controllers/authController.js'; 
 import { verifyToken } from '../middleware/authMiddleware.js';
-import { getProfile, getRestaurant, getTheMEnu, updateProfile } from '../controllers/users.js';
+import { addTheOrder, getProfile, getRestaurant, getTheMEnu, updateProfile } from '../controllers/users.js';
 import { addMEnu, createRestaurant, deleteTheMenu, editMenu } from '../controllers/restaurant.js';
 const router = express.Router();
 
@@ -24,7 +24,7 @@ router.get('/App/restaurent', getRestaurant)
 // get the menu list
 router.get('/App/menu', getTheMEnu)
 // get the order list
-
+router.get('/App/order', addTheOrder)
 //  
 
 export default router;
