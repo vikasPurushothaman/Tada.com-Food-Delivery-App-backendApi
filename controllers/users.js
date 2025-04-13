@@ -1,3 +1,5 @@
+import MenuItem from "../models/MenuItem.js";
+import Restaurant from "../models/Restaurant.js";
 import User from "../models/User.js";
 import bcrypt from 'bcrypt';
 
@@ -63,4 +65,35 @@ export const getProfile = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: 'Profile retrieval failed', error: error.message });
     }
+}
+
+export const getRestaurant = async(req, res) => {
+  try {
+    const restaurantList = await Restaurant.find();
+    if(!restaurantList){
+      return res.status(400).json({message: 'No restaurants found'});
+    }
+    res.status(200).json({message: 'Restaurant list retrieved successfully', restaurantList});
+  } catch (error) {
+    res.status(500).json({ message: 'Restaurant list retrieval failed', error: error.messag}); 
+  }
+}
+
+export const getTheMEnu = async(req, res) => {
+  const {id} = req.query;
+  try {
+      if (!id) {
+          return res.status(400).json({ message: 'Restaurant ID is required' });
+      }
+      const result = await MenuItem.find({
+        restaurant : id
+      })
+      if(!result){
+        return res.status(400).json({message: 'No menu items found'});
+      }
+      res.status(200).json({message: 'Menu items retrieved successfully', result});
+  } catch (error) {
+    res.status(500).json({ message: 'Menu items retrieval failed', error: error.messag});
+    
+  }
 }
